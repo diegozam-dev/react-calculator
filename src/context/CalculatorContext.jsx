@@ -83,29 +83,43 @@ export const CalculatorContextProvider = (props) => {
   const handleDelete = () => {
     if (currentValue === '0') return;
 
-    if (currentValue.length === 1) return setCurrentValue('0');
+    let newCurrentValue;
 
-    const newCurrentValue = currentValue.slice(0, currentValue.length - 1);
+    if (currentValue.length === 1) {
+      newCurrentValue = '0';
+    } else {
+      newCurrentValue = currentValue.slice(0, currentValue.length - 1);
+    }
 
     setCurrentValue(newCurrentValue);
   };
 
   const handleEqual = () => {
-    let result;
-    if (
-      operationValues[operationValues.length - 1] !== '+' &&
-      operationValues[operationValues.length - 1] !== '-' &&
-      operationValues[operationValues.length - 1] !== 'x' &&
-      operationValues[operationValues.length - 1] !== '/'
-    ) {
-      result = currentValue;
-    } else {
-      result = evaluate(
-        operationValues.join('').concat(currentValue).replace('x', '*')
-      );
+    let result = '0';
+    let newOperationValues = operationValues;
+
+    if (lenghtOperationValues === 0) {
+      newOperationValues = [currentValue];
     }
 
-    setOperationValues([...operationValues, currentValue, '=']);
+    if (operations.some((op) => op === lastOperationValue)) {
+      result = evaluate(
+        newOperationValues.join('').concat(currentValue).replaceAll('x', '*')
+      );
+
+      newOperationValues.push(currentValue, '=');
+    }
+
+    if (lastOperationValue === '=') {
+      newOperationValues.pop(); // Delete '='
+      newOperationValues[0] = currentValue; // Change first element
+
+      result = evaluate(newOperationValues.join('').replaceAll('x', '*'));
+
+      newOperationValues.push('=');
+    }
+
+    setOperationValues(newOperationValues);
     setCurrentValue(result.toString());
   };
 

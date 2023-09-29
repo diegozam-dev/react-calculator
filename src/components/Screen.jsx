@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+import Input from './Input';
 import { CalculatorContext } from '../context/CalculatorContext';
 
 const Screen = () => {
@@ -10,19 +11,12 @@ const Screen = () => {
     - the screen__current-value shows the current value you want to operate on.
   */
   return (
-    <div className="calculator__screen">
-      <input
-        className="screen__operation-values"
-        type="text"
+    <div className="calculator__screen w-full flex flex-col">
+      <Input
         value={operationValues.join(' ')}
-        disabled
+        className={'text-base text-zinc-700'}
       />
-      <input
-        className="screen__current-value"
-        type="text"
-        value={currentValue}
-        disabled
-      />
+      <Input value={currentValue} className={'text-xl text-zinc-900'} />
     </div>
   );
 };

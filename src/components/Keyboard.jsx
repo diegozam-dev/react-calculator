@@ -7,34 +7,88 @@ const Keyboard = () => {
   const {
     numbers,
     operations,
-    handleNumberClicks,
-    handleOperationClicks,
-    handlePercentage,
-    handlePeriodClicks,
-    handleClear,
-    handleDelete,
-    handleEqual,
+    handleNumberClick,
+    handleOperationClick,
+    handlePercentageClick,
+    handlePeriodClick,
+    handleClearClick,
+    handleDeleteClick,
+    handleEqualClick,
   } = useContext(CalculatorContext);
 
   /*
     - returns the entire calculator keyboard.
   */
   return (
-    <section className="calculator__keyboard">
+    <section className="calculator__keyboard grid grid-cols-5 gap-2">
       {numbers.map((num) => (
-        <Button key={num} content={num} action={handleNumberClicks} />
+        <Button
+          key={num}
+          content={num}
+          action={handleNumberClick}
+          className={
+            'bg-zinc-600 text-white hover:bg-zinc-700 active:bg-zinc-600'
+          }
+        />
       ))}
 
-      {operations.map((op) => (
-        <Button key={op} content={op} action={handleOperationClicks} />
-      ))}
+      <Button
+        content={'0'}
+        action={handleNumberClick}
+        className={
+          'col-start-2 row-start-4 row-end-5 bg-zinc-600 text-white hover:bg-zinc-700 active:bg-zinc-600'
+        }
+      />
 
-      <Button content={'C'} action={handleClear} />
-      <Button content={<FaDeleteLeft />} action={handleDelete} />
+      <div className="operators col-start-4 col-end-6 row-start-2 row-end-4 grid grid-cols-2 gap-2">
+        {operations.map((op) => (
+          <Button
+            key={op}
+            content={op}
+            action={handleOperationClick}
+            className={
+              'bg-zinc-700 text-white hover:bg-zinc-600 active:bg-zinc-700'
+            }
+          />
+        ))}
+      </div>
 
-      <Button content={'.'} action={handlePeriodClicks} />
-      <Button content={'%'} action={handlePercentage} />
-      <Button content={'='} action={handleEqual} />
+      <Button
+        content={'C'}
+        action={handleClearClick}
+        className={
+          'col-start-4 col-end-5 row-start-1 row-end-2 bg-zinc-700 text-white hover:bg-zinc-600 active:bg-zinc-700'
+        }
+      />
+      <Button
+        content={<FaDeleteLeft />}
+        action={handleDeleteClick}
+        className={
+          'col-start-5 col-end-6 row-start-1 row-end-2 bg-zinc-700 text-white hover:bg-zinc-600 active:bg-zinc-700'
+        }
+      />
+
+      <Button
+        content={'.'}
+        action={handlePeriodClick}
+        className={
+          'bg-zinc-600 text-white hover:bg-zinc-700 active:bg-zinc-600'
+        }
+      />
+      <Button
+        content={'%'}
+        action={handlePercentageClick}
+        className={
+          'bg-zinc-600 text-white hover:bg-zinc-700 active:bg-zinc-600'
+        }
+      />
+      <Button
+        content={'='}
+        action={handleEqualClick}
+        className={
+          'col-start-4 col-end-6 row-start-4 bg-cyan-700 text-zinc-950 hover:bg-cyan-600 active:bg-cyan-700'
+        }
+      />
     </section>
   );
 };

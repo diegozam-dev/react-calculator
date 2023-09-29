@@ -3,7 +3,7 @@ import { divide, evaluate } from 'mathjs';
 
 export const CalculatorContext = createContext(null);
 
-const numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+const numbers = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
 const operations = ['+', '-', 'x', '/'];
 
 export const CalculatorContextProvider = (props) => {
@@ -13,15 +13,18 @@ export const CalculatorContextProvider = (props) => {
   const lastOperationValue = operationValues[operationValues.length - 1];
   const lenghtOperationValues = operationValues.length;
 
-  const handleNumberClicks = (value) => {
+  const handleNumberClick = (value) => {
     let newCurrentValue = value;
+
+    if (lastOperationValue === '=') {
+      // we will do a new calculation
+      // we clear the "operationValues" and update the "currentValue" with the new value
+      setOperationValues([]);
+      return setCurrentValue(newCurrentValue);
+    }
 
     if (currentValue === '0') {
       if (newCurrentValue === '0') return;
-    } else if (lastOperationValue === '=') {
-      // we will perform a new calculation
-      // we clear the "operationValues" and update the "currentValue" with the new value
-      setOperationValues([]);
     } else {
       newCurrentValue = currentValue.concat(value);
     }
@@ -29,7 +32,7 @@ export const CalculatorContextProvider = (props) => {
     setCurrentValue(newCurrentValue);
   };
 
-  const handleOperationClicks = (op) => {
+  const handleOperationClick = (op) => {
     let newCurrentValue = currentValue;
     let newOperationValues = [];
 
@@ -52,7 +55,7 @@ export const CalculatorContextProvider = (props) => {
     setCurrentValue('0');
   };
 
-  const handlePeriodClicks = (period) => {
+  const handlePeriodClick = (period) => {
     let newCurrentValue;
 
     if (lastOperationValue === '=') {
@@ -67,7 +70,7 @@ export const CalculatorContextProvider = (props) => {
     setCurrentValue(newCurrentValue);
   };
 
-  const handlePercentage = () => {
+  const handlePercentageClick = () => {
     if (currentValue === '0') return;
 
     const newCurrentValue = divide(currentValue, 100).toString();
@@ -75,12 +78,12 @@ export const CalculatorContextProvider = (props) => {
     setCurrentValue(newCurrentValue);
   };
 
-  const handleClear = () => {
+  const handleClearClick = () => {
     setCurrentValue('0');
     setOperationValues([]);
   };
 
-  const handleDelete = () => {
+  const handleDeleteClick = () => {
     if (currentValue === '0') return;
 
     let newCurrentValue;
@@ -94,32 +97,29 @@ export const CalculatorContextProvider = (props) => {
     setCurrentValue(newCurrentValue);
   };
 
-  const handleEqual = () => {
+  const handleEqualClick = () => {
     let result = '0';
     let newOperationValues = operationValues;
+    let newCurrentValue = currentValue;
 
-    if (lenghtOperationValues === 0) {
-      newOperationValues = [currentValue];
+    if (newCurrentValue.split('.')[1] === '') {
+      newCurrentValue = newCurrentValue.split('.', 1);
+    }
+
+    if (lenghtOperationValues === 0 || lastOperationValue === '=') {
+      newOperationValues = [newCurrentValue];
+      result = newCurrentValue;
     }
 
     if (operations.some((op) => op === lastOperationValue)) {
       result = evaluate(
-        newOperationValues.join('').concat(currentValue).replaceAll('x', '*')
+        newOperationValues.join('').concat(newCurrentValue).replaceAll('x', '*')
       );
 
-      newOperationValues.push(currentValue, '=');
+      newOperationValues.push(newCurrentValue);
     }
 
-    if (lastOperationValue === '=') {
-      newOperationValues.pop(); // Delete '='
-      newOperationValues[0] = currentValue; // Change first element
-
-      result = evaluate(newOperationValues.join('').replaceAll('x', '*'));
-
-      newOperationValues.push('=');
-    }
-
-    setOperationValues(newOperationValues);
+    setOperationValues([...newOperationValues, '=']);
     setCurrentValue(result.toString());
   };
 
@@ -130,13 +130,13 @@ export const CalculatorContextProvider = (props) => {
         operations,
         operationValues,
         currentValue,
-        handleNumberClicks,
-        handleOperationClicks,
-        handlePercentage,
-        handlePeriodClicks,
-        handleClear,
-        handleDelete,
-        handleEqual,
+        handleNumberClick,
+        handleOperationClick,
+        handlePercentageClick,
+        handlePeriodClick,
+        handleClearClick,
+        handleDeleteClick,
+        handleEqualClick,
       }}
     >
       {props.children}

@@ -3,7 +3,7 @@ const Button = ({ content, action, className }) => {
     <button
       className={
         className +
-        ' calculator__button font-semibold grid place-items-center rounded-md transition-all duration-200'
+        ' calculator__button font-semibold h-11 grid place-items-center rounded-md transition-all duration-200'
       }
       onClick={() => action(content)}
     >
